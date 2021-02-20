@@ -22,7 +22,7 @@ def login_post():
 
     user = User.query.filter_by(email=email).first()
 
-    # check if user actually exists
+    # chzeck if user actually exists
     # take the user supplied password, hash it, and compare it to the hashed password in database
     if not user or not check_password_hash(user.password, password):
         flash("Please check your login details and try again.")
@@ -39,6 +39,7 @@ def login_post():
 def signup():
     return render_template("signup.html")
 
+<<<<<<< HEAD
 
 @auth.route("/signup", methods=["POST"])
 def signup_post():
@@ -56,6 +57,26 @@ def signup_post():
         return redirect(url_for("auth.signup"))
 
     # create new user with the form data. Hash the password so plaintext versio
+=======
+
+@auth.route("/signup", methods=["POST"])
+def signup_post():
+
+    email = request.form.get("email")
+    name = request.form.get("name")
+    password = request.form.get("password")
+    user = User.query.filter_by(
+        email=email
+    ).first()  # if this returns a user, then the email already exists in database
+
+    if (
+        user
+    ):  # if a user is found, we want to redirect back to signup page so user can try again
+        flash("Email address already exists")
+        return redirect(url_for("auth.signup"))
+
+    # create new user with the form data. Hash the password so plaintext version isn't saved.
+>>>>>>> 7ad285ec157cc70f1a7836cd55d6e7f68076fa22
     new_user = User(
         email=email,
         name=name,
