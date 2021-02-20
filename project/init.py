@@ -21,11 +21,8 @@ def create_app():
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
 
-<<<<<<< HEAD
 
 from .models import User
-=======
->>>>>>> 5f3e10ba7351e3bea55274d067fda34fa5ef01a7
 
 password = b"passw0rd"
 pin = b"9493910663"
@@ -61,12 +58,8 @@ Products = Table(
     Column("id", BigInteger, nullable=True, primary_key=True),
     Column("name", String(255), nullable=True),
     Column("description", Text, nullable=True),
-<<<<<<< HEAD
     Column("price", Numeric, nullable=True),
-=======
-    Column("price", Numeric, nullable=False),
     Column("is_hidden", SmallInteger, nullable=True, default=0),
->>>>>>> 5f3e10ba7351e3bea55274d067fda34fa5ef01a7
     Column("code", String, nullable=True),
     # Column("image", Blob, nullable=True),
     Column("category", BigInteger, nullable=True),
@@ -77,20 +70,14 @@ class User(object):
     def __init__(
         self, name, PIN, password, pgp_public_key, is_vendor, bip32_key, bip32_key
     ):
-<<<<<<< HEAD
-=======
         self.name = name
->>>>>>> 5f3e10ba7351e3bea55274d067fda34fa5ef01a7
         self.PIN = PIN
         self.password = password
         self.pgp_public_key = pgp_public_key
         self.is_vendor = is_vendor
         self.bip32_key = bip32_key
-<<<<<<< HEAD
         self.is_vendor = is_vendor
-=======
         self.bip32_key_index = bip32_key_index
->>>>>>> 5f3e10ba7351e3bea55274d067fda34fa5ef01a7
 
 
 class Products(object):
@@ -111,5 +98,3 @@ class Products(object):
 mapper(User, Users)
 mapper(Products, Products)
 
-metadata.create_all(db)
-4
