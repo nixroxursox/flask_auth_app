@@ -2,10 +2,30 @@ from flask_login import UserMixin
 import sqlalchemy
 from sqlalchemy import *
 from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy import (
+    Table,
+    Column,
+    Integer,
+    BigInteger,
+    String,
+    MetaData,
+    ForeignKey,
+    Sequence,
+)
 import nacl.pwhash
 from sqlalchemy.orm import mapper
 
+"""
+class User(UserMixin, db.Model):
+    id = db.Column(
+        db.Integer, primary_key=True
+    )  # primary keys are required by SQLAlchemy
+    email = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100))
+    name = db.Column(db.String(1000))
+"""
+
+metadata = MetaData()
 
 Users = Table(
     "Users",
@@ -24,7 +44,7 @@ Users = Table(
 Products = Table(
     "Products",
     metadata,
-    Column("id", BigInteger, nullable=False, Sequence("products_pk_seq"), primary_key=True),
+    Column("id", BigInteger, Sequence("products_pk_seq"), primary_key=True),
     Column("name", String(255), nullable=True),
     Column("description", Text, nullable=True),
     Column("price", Numeric, nullable=False),
@@ -50,7 +70,7 @@ class User(object):
 
 class Products(object):
     def __init__(
-        self, name, description, price, user_id, tags, is_hidden, code, image, category
+        self, name, description, price, user_id, tags, is_hidden, code, category
     ):
         self.name = name
         self.description = description

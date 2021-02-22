@@ -1,5 +1,3 @@
-# init.py
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -12,7 +10,14 @@ def create_app():
     app = Flask(__name__)
 
     app.config["SECRET_KEY"] = "9OLWxND4o83j4K4iuopO"
+<<<<<<< HEAD
+    # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = "postgresql://postgres:passw0rd@localhost:5432/postgres"
+=======
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
+>>>>>>> 7ad285ec157cc70f1a7836cd55d6e7f68076fa22
 
     db.init_app(app)
 
@@ -25,8 +30,14 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
+<<<<<<< HEAD
+        # since the user_id is just the primary key of our user table, use it
+        #  in the query for the user
+        return User.query.get(int(user_id))
+=======
         # since the user_id is just the primary key of our user table, use it in the query for the user
         return User.query.get(int(id))
+>>>>>>> 5f3e10ba7351e3bea55274d067fda34fa5ef01a7
 
     # blueprint for auth routes in our app
     from .auth import auth as auth_blueprint
