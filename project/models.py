@@ -2,16 +2,20 @@ from flask_login import UserMixin
 import sqlalchemy
 from sqlalchemy import *
 from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy import (
+    Table,
+    Column,
+    Integer,
+    BigInteger,
+    String,
+    MetaData,
+    ForeignKey,
+    Sequence,
+)
 import nacl.pwhash
 from sqlalchemy.orm import mapper
 
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 """
->>>>>>> 7ad285ec157cc70f1a7836cd55d6e7f68076fa22
 class User(UserMixin, db.Model):
     id = db.Column(
         db.Integer, primary_key=True
@@ -19,16 +23,12 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
-<<<<<<< HEAD
-=======
 """
 
-users = Table(
-    "users",
-=======
+metadata = MetaData()
+
 Users = Table(
     "Users",
->>>>>>> 5f3e10ba7351e3bea55274d067fda34fa5ef01a7
     metadata,
     Column("id", BigInteger, Sequence("users_pk_seq"), primary_key=True),
     Column("name", String, unique=True),
@@ -44,7 +44,7 @@ Users = Table(
 Products = Table(
     "Products",
     metadata,
-    Column("id", BigInteger, nullable=False, Sequence("products_pk_seq"), primary_key=True),
+    Column("id", BigInteger, Sequence("products_pk_seq"), primary_key=True),
     Column("name", String(255), nullable=True),
     Column("description", Text, nullable=True),
     Column("price", Numeric, nullable=False),
@@ -62,10 +62,6 @@ class User(object):
         self.name = name
         self.PIN = PIN
         self.password = password
-<<<<<<< HEAD
-        self.public_key = public_key
->>>>>>> 7ad285ec157cc70f1a7836cd55d6e7f68076fa22
-=======
         self.pgp_public_key = pgp_public_key
         self.is_vendor = is_vendor
         self.bip32_key = bip32_key
@@ -74,7 +70,7 @@ class User(object):
 
 class Products(object):
     def __init__(
-        self, name, description, price, user_id, tags, is_hidden, code, image, category
+        self, name, description, price, user_id, tags, is_hidden, code, category
     ):
         self.name = name
         self.description = description
@@ -89,4 +85,3 @@ class Products(object):
 
 mapper(User, Users)
 mapper(Products, Products)
->>>>>>> 5f3e10ba7351e3bea55274d067fda34fa5ef01a7
