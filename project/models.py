@@ -13,7 +13,7 @@ Users = Table(
     Column("id", BigInteger, Sequence("users_pk_seq"), primary_key=True),
     Column("name", String, unique=True),
     Column("PIN", String, nullable=False),
-    Column("pgp_public_key", Text),
+    Column("pgp_public_key", Text),  
     Column("bip32_key_index", BigInteger),
     Column("is_vendor", SmallInteger, default=0),
     Column("bip32_key", Text),
