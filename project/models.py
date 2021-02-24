@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 import sqlalchemy
+import flask_sqlalchemy
 from sqlalchemy import *
 from sqlalchemy import create_engine
 from sqlalchemy import (
@@ -14,16 +15,8 @@ from sqlalchemy import (
 )
 import nacl.pwhash
 from sqlalchemy.orm import mapper
+import datetime
 
-"""
-class User(UserMixin, db.Model):
-    id = db.Column(
-        db.Integer, primary_key=True
-    )  # primary keys are required by SQLAlchemy
-    email = db.Column(db.String(100), unique=True)
-    password = db.Column(db.String(100))
-    name = db.Column(db.String(1000))
-"""
 
 metadata = MetaData()
 
@@ -33,11 +26,12 @@ Users = Table(
     Column("id", BigInteger, Sequence("users_pk_seq"), primary_key=True),
     Column("name", String, unique=True),
     Column("PIN", String, nullable=False),
-    Column("pgp_public_key", Text),  
-    Column("bip32_key_index", BigInteger),
+    Column("password", String, nullable=False),
+    Column("pgp_public_key", Text(3000), nullable=True),
+    Column("bip32_key", Text, nullable=True),
+    Column("bip32_key_index", BigInteger, nullable=True),
     Column("is_vendor", SmallInteger, default=0),
-    Column("bip32_key", Text),
-    Column("created", DateTime, nullable=False, default=func.now()),
+    Column("created", DateTime, nullable=False, default=func.datetime.now()),
     Column("Modified", DateTime, nullable=False, onupdate=func.utc_times()),
 )
 
@@ -48,6 +42,8 @@ Products = Table(
     Column("name", String(255), nullable=True),
     Column("description", Text, nullable=True),
     Column("price", Numeric, nullable=False),
+    Column("user_id", String(255), nullable=True),
+    Column("tags", Text, nullable=True),
     Column("is_hidden", SmallInteger, nullable=True, default=0),
     Column("code", String, nullable=True),
     # Column("image", Blob, nullable=True),
@@ -68,7 +64,7 @@ class User(object):
         self.bip32_key_index = bip32_key_index
 
 
-class Products(object):
+class Product(object):
     def __init__(
         self, name, description, price, user_id, tags, is_hidden, code, category
     ):
@@ -84,4 +80,4 @@ class Products(object):
 
 
 mapper(User, Users)
-mapper(Products, Products)
+mapper(Product, Products)
