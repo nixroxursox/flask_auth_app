@@ -1,5 +1,8 @@
+from flask_login import UserMixin
 import sqlalchemy
 import flask_sqlalchemy
+from sqlalchemy import *
+from sqlalchemy import create_engine
 from sqlalchemy import (
     Table,
     Column,
@@ -9,27 +12,28 @@ from sqlalchemy import (
     MetaData,
     ForeignKey,
     Sequence,
-    Numeric,
-    SmallInteger,
-    DateTime,
-    Text,
-    create_engine
 )
 import nacl.pwhash
 from sqlalchemy.orm import mapper
 import datetime
-from datetime import *
-from sqlalchemy.ext.declarative import declarative_base
 
 
-dbstring = "postgresql+psycopg2://postgres:passw0rd@localhost:5432/postgres"
-eng = create_engine(dbstring)
-
-Base = declarative_base()
 metadata = MetaData()
-Base.metadata.create_all(eng)
 
-
+Users = Table(
+    "Users",
+    metadata,
+    Column("id", BigInteger, Sequence("users_pk_seq"), primary_key=True),
+    Column("name", String, unique=True),
+    Column("PIN", String, nullable=False),
+    Column("password", String, nullable=False),
+    Column("pgp_public_key", Text(3000), nullable=True),
+    Column("bip32_key", Text, nullable=True),
+    Column("bip32_key_index", BigInteger, nullable=True),
+    Column("is_vendor", SmallInteger, default=0),
+    Column("created", DateTime, nullable=False, default=func.datetime.now()),
+    Column("Modified", DateTime, nullable=False, onupdate=func.utc_times()),
+)
 
 Products = Table(
     "Products",
@@ -47,29 +51,17 @@ Products = Table(
 )
 
 
-class User(Base):
-    __tablename__ = 'Users'
-    id = Column(BigInteger, Sequence('user_id_seq'), primary_key=True)
-    name = Column(String, unique=True)
-    PIN = Column(String, nullable=False)
-    password = Column(String, nullable=False)
-    pgp_public_key = Column(Text(3000), nullable=True)
-    bip32_key = Column(Text, nullable=True)
-    bip32_key_integer = Column(BigInteger, nullable=True)
-    is_vendor = Column(SmallInteger, default=0)
-    created = Column(DateTime, nullable=False, default=datetime.utcnow())
-    modified = Column(DateTime, nullable=False, onupdate=datetime.utcnow())
-
-def __repr__(self):
-    return "<User(name='%s', PIN='%s', password='%s', pgp_public_key='%s', is_vendor='%s', bip32_key='%s', bip32_key_index='%s')>" % (
-    self.name,
-    self.PIN,
-    self.password,
-    self.pgp_public_key,
-    self.is_vendor,
-    self.bip32_key,
-    self.bip32_key_index
-    )
+class User(object):
+    def __init__(
+        self, name, PIN, password, pgp_public_key, is_vendor, bip32_key, bip32_key_index
+    ):
+        self.name = name
+        self.PIN = PIN
+        self.password = password
+        self.pgp_public_key = pgp_public_key
+        self.is_vendor = is_vendor
+        self.bip32_key = bip32_key
+        self.bip32_key_index = bip32_key_index
 
 
 class Product(object):
@@ -87,5 +79,5 @@ class Product(object):
         self.category = category
 
 
+mapper(User, Users)
 mapper(Product, Products)
-Base.metadata.create_all()

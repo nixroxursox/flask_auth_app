@@ -1,23 +1,19 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from .models import User
+from .models import Product
 
 # init SQLAlchemy so we can use it later in our models
-db = SQLAlchemy()
+dbstring = "postgresql+psycopg2://postgres:passw0rd@localhost:5432/postgres"
 
 
 def create_app():
     app = Flask(__name__)
+    db = SQLAlchemy(app)
 
     app.config["SECRET_KEY"] = "9OLWxND4o83j4K4iuopO"
-<<<<<<< HEAD
-    # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
-    app.config[
-        "SQLALCHEMY_DATABASE_URI"
-    ] = "postgresql://postgres:passw0rd@localhost:5432/postgres"
-=======
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
->>>>>>> 7ad285ec157cc70f1a7836cd55d6e7f68076fa22
+    app.config["SQLALCHEMY_DATABASE_URI"] = dbstring
 
     db.init_app(app)
 
@@ -25,19 +21,12 @@ def create_app():
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
 
-    from .models import Users
-    from .models import Products
-
     @login_manager.user_loader
-    def load_user(user_id):
-<<<<<<< HEAD
+    def load_user(name):
+
         # since the user_id is just the primary key of our user table, use it
         #  in the query for the user
-        return User.query.get(int(user_id))
-=======
-        # since the user_id is just the primary key of our user table, use it in the query for the user
-        return User.query.get(int(id))
->>>>>>> 5f3e10ba7351e3bea55274d067fda34fa5ef01a7
+        return User.query.get(name)
 
     # blueprint for auth routes in our app
     from .auth import auth as auth_blueprint
