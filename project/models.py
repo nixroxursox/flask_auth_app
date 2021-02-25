@@ -27,7 +27,7 @@ eng = create_engine(dbstring)
 
 Base = declarative_base()
 metadata = MetaData()
-Base.metadata.create_all(eng)
+
 
 
 
@@ -88,4 +88,3 @@ class Product(object):
 
 
 mapper(Product, Products)
-Base.metadata.create_all()

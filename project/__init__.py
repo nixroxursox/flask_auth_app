@@ -2,10 +2,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from .models import User
-from .models import Product
+from .database import Base
 
-# init SQLAlchemy so we can use it later in our models
 dbstring = "postgresql+psycopg2://postgres:passw0rd@localhost:5432/postgres"
+# eng = create_engine(dbstring)
 
 
 def create_app():
