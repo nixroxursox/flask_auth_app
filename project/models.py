@@ -20,26 +20,28 @@ from sqlalchemy import (
 from sqlalchemy.orm import mapper
 
 m = MetaData()
+e = sqlalchemy.create_engine(dbs, echo=True)
+
 
 Products = Table(
     "Products",
     m,
     Column("id", BigInteger, Sequence("products_pk_seq"), primary_key=True),
-    Column("name", String(255), nullable=True),
+    Column("name", String(255), nullable=False, unique=False),
     Column("description", Text, nullable=True),
     Column("price", Numeric, nullable=False),
-    Column("user_id", String(255), nullable=True),
+    Column("user_id", String(255), nullable=False, unique=True),
     Column("tags", Text, nullable=True),
     Column("is_hidden", SmallInteger, nullable=True, default=0),
     Column("code", String, nullable=True),
-    # Column("image", Blob, nullable=True),
+    Column("images", Binary, nullable=True),
     Column("category", BigInteger, nullable=True),
 )
 
 
 class Product(object):
     def __init__(
-        self, name, description, price, user_id, tags, is_hidden, code, category
+        self, name, description, price, user_id, tags, is_hidden, code, images, category
     ):
         self.name = name
         self.description = description
@@ -48,7 +50,7 @@ class Product(object):
         self.tags = tags
         self.is_hidden = is_hidden
         self.code = code
-        #    self.image = image
+        self.images = images
         self.category = category
 
 
@@ -56,7 +58,7 @@ Users = Table(
     "Users",
     m,
     Column("id", BigInteger, Sequence("user_id_seq"), primary_key=True),
-    Column("name", String, unique=True),
+    Column("name", String(255), nullable=False, unique=True, ForeignKey('Products(user_id)')),
     Column("PIN", String, nullable=False),
     Column("password", String, nullable=False),
     Column("pgp_public_key", Text, nullable=True),
