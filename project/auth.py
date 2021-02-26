@@ -1,12 +1,19 @@
 # auth.py
 from flask import Flask
-from flask import Blueprint, render_template, redirect, url_for, request, flash
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import (
+    Blueprint,
+    render_template,
+    redirect,
+    url_for,
+    request,
+    flash,
+    g,
+    session,
+)
 from flask_login import login_user, logout_user, login_required
-from .models import User
-
-# from . import db
 import nacl.pwhash
+import functools
+
 
 auth = Blueprint("auth", __name__)
 
@@ -47,9 +54,9 @@ def signup():
 @auth.route("/signup", methods=["POST"])
 def signup_post():
 
-    email = request.form.get("name")
-    name = request.form.get("password")
-    password = request.form.get("PIN")
+    name = request.form.get("name")
+    password = request.form.get("password")
+    PIN = request.form.get("PIN")
 
     user = User.query.filter_by(
         name=name
@@ -71,6 +78,38 @@ def signup_post():
     db.session.commit()
 
     return redirect(url_for("auth.login"))
+
+
+@auth.route("/register", methods=("GET", "POST"))
+def register():
+    if request.method == "POST":
+        username = request.form["name"]
+        password = request.form["password"]
+        PIN = request.form["PIN"]
+        db = get_db()
+        error = None
+
+        if not name:
+            error = "Username is required."
+        elif not password:
+            error = "Password is required."
+        elif (
+            db.execute("SELECT id FROM Users WHERE name = ?", (name,)).fetchone()
+            is not None
+        ):
+            error = "User {} is already registered.".format(name)
+
+        if error is None:
+            db.execute(
+                "INSERT INTO Users (name, password) VALUES (?, ?)",
+                (username, generate_password_hash(password)),
+            )
+            db.commit()
+            return redirect(url_for("auth.login"))
+
+        flash(error)
+
+    return render_template("auth/register.html")
 
 
 @auth.route("/logout")

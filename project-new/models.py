@@ -25,7 +25,7 @@ Products = Table(
     "Products",
     m,
     Column("id", BigInteger, Sequence("products_pk_seq"), primary_key=True),
-    Column("name", String(255), nullable=True),
+    Column("name", String(255), unique=True, nullable=False),
     Column("description", Text, nullable=True),
     Column("price", Numeric, nullable=False),
     Column("user_id", String(255), nullable=True),
@@ -56,7 +56,7 @@ Users = Table(
     "Users",
     m,
     Column("id", BigInteger, Sequence("user_id_seq"), primary_key=True),
-    Column("name", String, unique=True),
+    Column("name", String(255), unique=True, nullable=False, ForeignKey('name')),
     Column("PIN", String, nullable=False),
     Column("password", String, nullable=False),
     Column("pgp_public_key", Text, nullable=True),
@@ -80,6 +80,31 @@ class User(object):
         self.bip32_key_index = bip32_key_index
         self.is_vendor = is_vendor
 
+Admins = Table(
+    "Admins",
+    m,
+    Column("id", BigInteger, nullable=False, Sequence('admins_pk_seq'), primary_key=True),
+    Column("name", String(255), unique=True, nullable=False),
+    Column("admin_bip32_extended_public_key", Text, nullable=False),
+    Column("admin_bip32_key_index", BigInteger, nullable=False),
+    Column("admin_bitcoin_address", Text, nullable=False),
+    Column("permissions", SmallInteger , nullable=False),
+    Column("isModerator", tinyint(1), nullable=True, default=0),
+)
+
+
+class Admin(object):
+    def __init__(
+    self, name, admin_bip32_extended_public_key, admin_bip32_key_index, admin_bitcoin_address, permissions, isModerator
+    ):
+        self.name = name
+        self.admin_bip32_extended_public_key = admin_bip32_extended_public_key
+        self.admin_bip32_key_index = admin_bip32_key_index
+        self.admin_bitcoin_address = admin_bitcoin_address
+        self.permissions = permissions
+        sef.isModerator = isModerator
+
 
 mapper(Product, Products)
 mapper(User, Users)
+mapper(Admin, admins)
